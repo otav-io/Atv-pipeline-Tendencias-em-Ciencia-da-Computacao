@@ -183,52 +183,52 @@ const questions = [
 
 const macacosInfo = {
     "bronca no trabalho": {
-        image: "macacos/macaco bronca no trabalho.jpg",
+        image: "imgs/macaco bronca no trabalho.jpg",
         title: "Macaco Bronca no Trabalho",
         description: "Você é o macaquinho que sofre calado. Toma bronca do chefe, faz cara de quem entendeu e pensa \"eu devia era estar na floresta\". Vive no limite entre o colapso mental e o café das 15h."
     },
     "cafe": {
-        image: "macacos/macaco cafe.jpg",
+        image: "imgs/macaco cafe.jpg",
         title: "Macaco Café",
         description: "Viciado em cafeína e em fingir produtividade. Se o café acabar, o sistema cai junto. Já está na 7ª xícara e ainda acha que é \"só pra acordar um pouquinho\"."
     },
     "estiloso": {
-        image: "macacos/macaco estiloso.jpg",
+        image: "imgs/macaco estiloso.jpg",
         title: "Macaco Estiloso",
         description: "O rei da selva maqueica. Usa banana como acessório e ainda faz pose pro reflexo da poça d'água. Os outros macacos te invejam, mas secretamente querem saber onde você compra as folhas."
     },
     "mim de": {
-        image: "macacos/macaco mim de.jpg",
+        image: "imgs/macaco mim de.jpg",
         title: "Macaco Mim Dê",
         description: "O pidão oficial da tribo. Se tem algo brilhando, você quer. Se outro macaquinho tem comida, você pede. E se dizem \"não\", você faz aquela carinha de fome até te darem oque voce quer."
     },
     "palhaço": {
-        image: "macacos/macaco palhaço.jpg",
+        image: "imgs/macaco palhaço.jpg",
         title: "Macaco Palhaço",
         description: "O bobo alegre do grupo. Ninguém te leva a sério, mas todo mundo ri contigo (ou de ti). Você resolve os problemas com piadas, mesmo quando o problema é você."
     },
     "pançudo": {
-        image: "macacos/macaco pançudo.jpg",
+        image: "imgs/macaco pançudo.jpg",
         title: "Macaco Pançudo",
         description: "A barriga fala antes do cérebro. Sempre comendo, sempre feliz. Se alguém disser \"não tem comida\", você aparece com um lanche \"de emergência\" que tava guardado no bolso."
     },
     "programador": {
-        image: "macacos/macaco programador.jpg",
+        image: "imgs/macaco programador.jpg",
         title: "Macaco Programador",
         description: "Vive no GitHub e come bugs no café da manhã. Dorme pouco, reclama do JavaScript e fala \"funcionava na minha máquina\" como filosofia de vida."
     },
     "rico": {
-        image: "macacos/macaco rico.jpg",
+        image: "imgs/macaco rico.jpg",
         title: "Macaco Rico",
         description: "Esse é o macaco que venceu na vida. Só fala de investimento e tem uma bananeira própria. Não encosta em nada que não seja premium e usa folhas importadas pra se abanar."
     },
     "sentado": {
-        image: "macacos/macaco sentado.jpg",
+        image: "imgs/macaco sentado.jpg",
         title: "Macaco Sentado",
         description: "O símbolo do sossego. Nada te abala, nem o caos da selva. Enquanto o resto surta, você só observa e pensa: \"pra quê tanto estresse se dá pra ficar sentado?\"."
     },
     "spotify": {
-        image: "macacos/macaco spotify.jpg",
+        image: "imgs/macaco spotify.jpg",
         title: "Macaco Spotify",
         description: "O DJ da floresta. Vive com fone no ouvido, criando trilha sonora até pra tomar água. Provavelmente tem uma playlist chamada \"Bananas e Bad Vibes\"."
     }
