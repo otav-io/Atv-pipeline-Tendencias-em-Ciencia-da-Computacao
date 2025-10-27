@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐒 Qual Macaco Você Seria? 🐒</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- Tela Inicial -->
+    <div id="home-screen" class="screen active">
+        <div class="container">
+            <h1>🐒 Qual Macaco Você Seria? 🦧</h1>
+            <p class="subtitle">Descubra qual macaco representa você através de um quiz divertido!</p>
+            <div class="emoji-parade">🐒🦧🐵🐒🦧🐵</div>
+            <button id="start-btn" class="btn btn-primary">Iniciar Quiz</button>
+            <div class="info-box">
+                <p>📝 O quiz tem 20 perguntas divertidas</p>
+                <p>⏱️ Leva cerca de 3-5 minutos</p>
+                <p>🎉 Prepare-se para resultados surpreendentes!</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tela do Quiz -->
+    <div id="quiz-screen" class="screen">
+        <div class="container">
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div id="progress-fill" class="progress-fill"></div>
+                </div>
+                <p class="progress-text">Pergunta <span id="current-question">1</span> de <span id="total-questions">20</span></p>
+            </div>
+            
+            <div class="question-container">
+                <h2 id="question-text"></h2>
+                <div id="options-container" class="options-container"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tela de Resultado -->
+    <div id="result-screen" class="screen">
+        <div class="container">
+            <h2>🎉 Seu Resultado 🎉</h2>
+            <div id="result-content" class="result-content">
+                <img id="result-image" src="" alt="Macaco">
+                <h3 id="result-title"></h3>
+                <p id="result-description"></p>
+            </div>
+            <button id="restart-btn" class="btn btn-primary">🔄 Refazer Quiz</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
