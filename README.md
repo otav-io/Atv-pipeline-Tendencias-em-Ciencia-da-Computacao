@@ -1,6 +1,7 @@
 # 🐒 Qual Macaco Você Seria? 🦧
 
 Um quiz interativo divertido criado com **HTML, CSS e JavaScript puro** para descobrir qual macaco você seria!
+teste em: https://otav-io.github.io/Atv-pipeline-Tendencias-em-Ciencia-da-Computacao
 
 ## Sobre o Projeto
 
@@ -28,13 +29,13 @@ Este é um quiz interativo com 20 perguntas divertidas que descobrem qual tipo d
 - 🪑 **Macaco Sentado** - O símbolo do sossego
 - 🎧 **Macaco Spotify** - O DJ da floresta
 
-## 🛠️ Tecnologias
+## Tecnologias
 
 - **HTML5** - Estrutura
 - **CSS3** - Estilização
 - **JavaScript** - Lógica e interatividade
 
-## 🔄 GitHub Actions Pipeline
+## GitHub Actions Pipeline
 
 O projeto possui uma pipeline automatizada que:
 
