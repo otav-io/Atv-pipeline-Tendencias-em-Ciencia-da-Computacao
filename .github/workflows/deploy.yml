@@ -35,3 +35,162 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: .
+
+  sast:
+    name: SAST - Static Application Security Testing
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install ESLint Security Plugin
+        run: npm install -g eslint-plugin-security eslint-plugin-no-unsanitized
+
+      - name: Run ESLint Security Analysis
+        run: |
+          npx eslint --config .eslintrc.json "**/*.js" --format json --output-file eslint-security-report.json || true
+          npx eslint --config .eslintrc.json "**/*.js" || true
+
+      - name: Install Python and Semgrep
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y python3-pip
+          pip3 install semgrep
+
+      - name: Install jq
+        run: |
+          sudo apt-get install -y jq
+
+      - name: Run Semgrep Security Scan
+        run: |
+          semgrep --config=auto --json --output=semgrep-report.json . || true
+          semgrep --config=auto . || true
+
+      - name: Validate SAST Results
+        run: |
+          echo "🔍 Validando resultados do SAST..."
+          
+          # Verificar se há vulnerabilidades críticas no Semgrep
+          if [ -f semgrep-report.json ]; then
+            CRITICAL_ISSUES=$(jq '[.results[] | select(.extra.severity == "ERROR")] | length' semgrep-report.json 2>/dev/null || echo "0")
+            if [ "$CRITICAL_ISSUES" -gt 0 ]; then
+              echo "❌ ERRO: Foram encontradas $CRITICAL_ISSUES vulnerabilidades críticas no código!"
+              exit 1
+            fi
+          fi
+          
+          # Verificar se há erros críticos no ESLint Security
+          if [ -f eslint-security-report.json ]; then
+            ESLINT_ERRORS=$(jq '[.[] | .messages[] | select(.severity == 2)] | length' eslint-security-report.json 2>/dev/null || echo "0")
+            if [ "$ESLINT_ERRORS" -gt 0 ]; then
+              echo "❌ ERRO: Foram encontrados $ESLINT_ERRORS erros de segurança no JavaScript!"
+              exit 1
+            fi
+          fi
+          
+          echo "✅ Validação SAST concluída com sucesso!"
+
+      - name: Upload SAST Reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: sast-reports
+          path: |
+            semgrep-report.json
+            eslint-security-report.json
+
+  dast:
+    name: DAST - Dynamic Application Security Testing
+    runs-on: ubuntu-latest
+    needs: build
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install OWASP ZAP
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y wget openjdk-11-jdk
+          wget https://github.com/zaproxy/zaproxy/releases/download/v2.14.0/ZAP_2.14.0_Linux.tar.gz
+          tar -xzf ZAP_2.14.0_Linux.tar.gz
+          sudo mv ZAP_2.14.0 /opt/zap
+          sudo chmod +x /opt/zap/zap.sh
+
+      - name: Install jq
+        run: |
+          sudo apt-get install -y jq
+
+      - name: Start Local Server
+        run: |
+          python3 -m http.server 8000 &
+          sleep 10
+          echo "Servidor iniciado na porta 8000"
+          curl -f http://localhost:8000 || echo "Servidor não respondeu"
+
+      - name: Run OWASP ZAP Baseline Scan
+        run: |
+          /opt/zap/zap.sh -cmd -quickurl http://localhost:8000 -quickprogress -quickout zap-report.json || true
+          /opt/zap/zap.sh -cmd -quickurl http://localhost:8000 -quickprogress || true
+
+      - name: Install Go and Nuclei
+        run: |
+          sudo apt-get install -y golang-go
+          go install -v github.com/projectdiscovery/nuclei/v3/cmd/nuclei@latest
+          ~/go/bin/nuclei -version || true
+
+      - name: Run Nuclei Scan
+        run: |
+          ~/go/bin/nuclei -u http://localhost:8000 -json -o nuclei-report.json || true
+          ~/go/bin/nuclei -u http://localhost:8000 || true
+
+      - name: Validate DAST Results
+        run: |
+          echo "🔍 Validando resultados do DAST..."
+          
+          # Verificar se há vulnerabilidades críticas no ZAP
+          if [ -f zap-report.json ]; then
+            # Tentar diferentes formatos de saída do ZAP
+            ZAP_HIGH_RISKS=$(jq -r '[.[]? | select(.risk == "High")] | length' zap-report.json 2>/dev/null || \
+              jq -r '[.site[]?.alerts[]? | select(.riskcode == "3")] | length' zap-report.json 2>/dev/null || echo "0")
+            
+            if [ "$ZAP_HIGH_RISKS" != "0" ] && [ "$ZAP_HIGH_RISKS" != "" ] && [ "$ZAP_HIGH_RISKS" != "null" ]; then
+              echo "❌ ERRO: Foram encontradas $ZAP_HIGH_RISKS vulnerabilidades de alto risco!"
+              exit 1
+            fi
+          fi
+          
+          # Verificar se há vulnerabilidades críticas no Nuclei
+          if [ -f nuclei-report.json ]; then
+            # Nuclei pode gerar um arquivo vazio ou um array de objetos
+            if [ -s nuclei-report.json ]; then
+              NUCLEI_CRITICAL=$(jq -r '[.[]? | select(.info.severity == "critical")] | length' nuclei-report.json 2>/dev/null || echo "0")
+              if [ "$NUCLEI_CRITICAL" != "0" ] && [ "$NUCLEI_CRITICAL" != "" ] && [ "$NUCLEI_CRITICAL" != "null" ]; then
+                echo "❌ ERRO: Foram encontradas $NUCLEI_CRITICAL vulnerabilidades críticas!"
+                exit 1
+              fi
+            fi
+          fi
+          
+          echo "✅ Validação DAST concluída com sucesso!"
+
+      - name: Upload DAST Reports
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: dast-reports
+          path: |
+            zap-report.json
+            nuclei-report.json
