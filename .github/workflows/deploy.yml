@@ -39,7 +39,6 @@ jobs:
   sast:
     name: SAST - Static Application Security Testing
     runs-on: ubuntu-latest
-    needs: build
     
     steps:
       - name: Checkout repository
@@ -109,7 +108,6 @@ jobs:
   dast:
     name: DAST - Dynamic Application Security Testing
     runs-on: ubuntu-latest
-    needs: build
     
     steps:
       - name: Checkout repository
@@ -162,7 +160,6 @@ jobs:
           
           # Verificar se há vulnerabilidades críticas no ZAP
           if [ -f zap-report.json ]; then
-            # Tentar diferentes formatos de saída do ZAP
             ZAP_HIGH_RISKS=$(jq -r '[.[]? | select(.risk == "High")] | length' zap-report.json 2>/dev/null || \
               jq -r '[.site[]?.alerts[]? | select(.riskcode == "3")] | length' zap-report.json 2>/dev/null || echo "0")
             
@@ -174,7 +171,6 @@ jobs:
           
           # Verificar se há vulnerabilidades críticas no Nuclei
           if [ -f nuclei-report.json ]; then
-            # Nuclei pode gerar um arquivo vazio ou um array de objetos
             if [ -s nuclei-report.json ]; then
               NUCLEI_CRITICAL=$(jq -r '[.[]? | select(.info.severity == "critical")] | length' nuclei-report.json 2>/dev/null || echo "0")
               if [ "$NUCLEI_CRITICAL" != "0" ] && [ "$NUCLEI_CRITICAL" != "" ] && [ "$NUCLEI_CRITICAL" != "null" ]; then
